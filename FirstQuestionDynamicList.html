@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="myform">
+        <input type="text" id="input" placeholder="enter txt to add to list">
+        <button id="button" type="button">Add To List</button>
+    </form>
+    <ol id="list">
+        <li>Tuyishime Eric</li>
+        <li>Ruyanga Merci</li>
+    </ul>
+    <script>
+        let myform = document.getElementById("myform");
+        let input = document.getElementById("input");
+        let button = document.getElementById("button");
+        button.addEventListener("click",function(event){
+        event.preventDefault();
+        let text = document.getElementById("input").value;
+        text.trim();
+        if(text.trim()!=""){
+            let list = document.getElementById("list");
+            let newlist = document.createElement("li");
+            newlist.innerText = text;
+            if((list.innerHTML).includes(text)){
+            alert("Item already in the list");
+            document.getElementById('input').value="";
+        }
+        else{
+            list.appendChild(newlist);
+            document.getElementById("input").value = "";
+
+        }}
+        else{
+            alert("You didn't add any text, Please insert text");
+        }
+        });
+    </script>
+</body>
+</html>

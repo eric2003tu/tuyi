@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All movies</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+        th, td {
+            border: 3px solid #0cc1f3;
+            padding: 10px;
+            text-align: left;
+            font-family: sans-serif;
+        }
+        th {
+            background-color: #b4b71a;
+            color: white;
+        }
+        button{
+            background-color: #8825a1;
+            border-radius: 7px;
+            color: white;
+            padding: 12px 12px;
+            font-weight: bolder;
+            font-family: sans-serif;
+            position: absolute;
+            right: 20px; 
+            top: 10px; /* Fixed missing top position */
+            z-index: 1000;
+            border: none;
+            cursor: pointer;
+            text-decoration:  none;
+        }
+        button:hover{
+            background-color: #3a203f;
+        }
+        a{
+            font-size: 18px;
+            text-decoration: none;
+            padding: 7px 7px;
+            font-weight: bolder;
+        }
+        #warning{
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: red;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: #1717e7;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #0cc1f3;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            width: 250px; /* Adjust width to fit design */
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-left: 20px; /* Adds a little space from the button */
+        }
+        
+        select:focus {
+            border-color: #8825a1;
+            box-shadow: 0 0 5px rgba(136, 37, 161, 0.7);
+        }
+        
+        option {
+            font-size: 16px;
+            padding: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>All the Movies That are On Fire</h1>
+    <button id="fetchButton" type="button">Fetch Movies</button>
+    <select id="movieCategory" name="movieCategory" placeholder="Select the category of the movie">
+        <option value="popular">popular</option>
+        <option value="top_rated">top_rated</option>
+        <option value="upcoming">upcoming</option>
+        <option value="now_playing">now_playing</option>
+        <option value="trending/movie/week">trending/movie/week</option>
+        <option value="action">Action</option>
+        <option value="comedy">Comedy</option>
+        <option value="drama">Drama</option>
+        <option value="horror">Horror</option>
+        <option value="sci-fi">Sci-Fi</option>
+    </select>
+    <p id="warning"></p>
+    <p id="loading" class="loading">Loading....</p>
+    <table id="moviesTable">
+        <thead>
+            <tr>
+                <th>WATCH IT</th>
+                <th>TITLE</th>
+                <th>YEAR</th>
+                <th>REALEASED</th>
+                <th>GENRE</th>
+                <th>DIRECTOR</th>
+                <th>WRITER</th>
+                <th>ACTORS</th>
+                <th>PLOT</th>
+                <th>LANGUAGE</th>
+                <th>POSTER</th>
+                <th>RATED</th>
+                <th>COUNTRY</th>
+                <th>PRODUCTION</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        const fetchButton = document.getElementById("fetchButton");
+        const moviesTable = document.querySelector("#moviesTable tbody");
+        const warning = document.getElementById("warning");
+        const loading = document.getElementById("loading");
+        fetchButton.addEventListener("click", function(){
+            loading.style.display = "block";
+            const selectElement = document.getElementById("movieCategory").value.trim();
+            const apiKey = "3b159ca3"; // OMDb API Key
+            const category = encodeURIComponent(selectElement);
+            const apiUrl = `https://www.omdbapi.com/?s=${category}&apikey=${apiKey}`; // OMDb API URL
+
+
+            fetch(apiUrl)
+            .then(function(response){
+                if(!response.ok){
+                    throw new Error("Network response was not ok.")
+                }
+                return response.json();
+            })
+            .then(function(data){
+                loading.style.display = "none";
+                if(data.Search && data.Search.length === 0){
+                    warning.textContent = "No movies Found!!!";
+                    warning.style.display = "block";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },2000)
+                return;
+                }
+                data.Search.forEach(function(movie){
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                    <td><a href=https://www.imdb.com/title/${movie.imdbID}/ target="_blank">Watch it on IMDb</a></td>
+                    <td>${movie.Title}</td>
+                    <td>${movie.Year}</td>
+                    <td>${movie.Released}</td>
+                    <td>${movie.Genre}</td>
+                    <td>${movie.Director}</td>
+                    <td>${movie.Writer}</td>
+                    <td>${movie.Actors}</td>
+                    <td>${movie.Plot}</td>
+                    <td>${movie.Language}</td>
+                    <td><img src="${movie.Poster}" alt="${movie.Title}" width="100"></td>
+                    <td>${movie.Rated}</td>
+                    <td>${movie.Country}</td>
+                    <td>${movie.Production}</td>
+                    `;
+                    moviesTable.appendChild(tr);
+                })
+
+            })
+            .catch(function(error){
+                console.error("Failed to fetch movies:",error);
+                loading.style.display = "none";
+                moviesTable.innerHTML= "<tr><td colspan='14'>Failed to fetch movies. Please try again later.</td></tr>";
+                warning.style.display = "block";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },3000)
+            })
+        });
+    </script>
+</body>
+</html>

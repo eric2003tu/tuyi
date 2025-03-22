@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right,#389738,#4a4a79,#7e3c3c, #368072, #303755, #983d7d,#a8a837,#389738);
+            margin: 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 320px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e756dd;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #28b5ed;
+            box-shadow: 0px 0px 5px rgba(43, 49, 55, 0.5);
+        }
+
+        button {
+            width: 100%;
+            height: 45px;
+            background: #2dd12a;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #3c6049;
+        }
+        #success{
+            color: blue;
+            font-size: 17px;
+            
+        }
+    </style>
+</head>
+<body>
+    <body>
+        <form id="postForm">
+            <Label for="UserId">Useraid</Label>
+            <input type="text" id="userId" name="userId" required placeholder="Enter Your userId digit"/><br/><br/>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required placeholder="Enter The Title of the Post"/><br/><br/>
+            <label for="body">Body</label>
+            <input type="text" id="body" name="body" required placeholder="Enter The Body of the Post"/><br/><br/>
+            <button type="submit" id="submitButton">Submit</button>
+            <p id="success"></p>
+        </form>
+        <script>
+            const form = document.getElementById("postForm");
+            form.addEventListener("submit", function(event){
+                event.preventDefault();
+                const userId = parseInt(document.getElementById("userId").value.trim());
+                const success = document.getElementById("success");
+                const postTitle = document.getElementById("title").value.trim();
+                const postBody = document.getElementById("body").value.trim();
+                fetch("https://jsonplaceholder.typicode.com/posts",{
+                    method : "POST",
+                    headers:{
+                        "Content-type":"application/json",
+                    },
+                    body : JSON.stringify({
+                        userId: userId,
+                        title: postTitle,
+                        body: postBody,
+                    }),
+                })
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function(data){
+                    success.textContent = "New post successfully added!!";
+                    form.reset();
+                })
+                .catch(function(error){
+                    console.error("Error adding post:", error);
+                    success.textContent = "Failed to add a new post. Please try again Later.";
+                })
+            });
+        </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News API</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+        th, td {
+            border: 3px solid #0cc1f3;
+            padding: 10px;
+            text-align: left;
+            font-family: sans-serif;
+        }
+        th {
+            background-color: #b4b71a;
+            color: white;
+        }
+        button{
+            background-color: #8825a1;
+            border-radius: 7px;
+            color: white;
+            padding: 12px 12px;
+            font-weight: bolder;
+            font-family: sans-serif;
+            position: absolute;
+            right: 20px; 
+            top: 10px; /* Fixed missing top position */
+            z-index: 1000;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover{
+            background-color: #3a203f;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: #1717e7;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: #1717e7;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        #warning{
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: red;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        h1{
+
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        The Table of All news That are Posted on NEWsAPI
+    </h1>
+    <button type="button" id="fetchNews">Fetch News</button>
+    <p id="loading" class="loading">Loading....</p>
+    <p id="warning"></p>
+    <table id="newsTable">
+        <thead>
+            <tr>
+                <th>STATUS</th>
+                <th>TOTAL RESULTS</th>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>AUTHOR</th>
+                <th>TITLE</th>
+                <th>DESCRIPTION</th>
+                <th>URL</th>
+                <th>IMG</th>
+                <th>PUBLISHED AT</th>
+                <th>CONTENT</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        const fetchNews = document.getElementById("fetchNews");
+        const newsTable = document.querySelector("#newsTable tbody");
+        const loading = document.getElementById("loading");
+        const warning = document.getElementById("warning");
+        fetchNews.addEventListener("click",function(){
+            loading.style.display = "block";
+            fetch("https://newsapi.org/v2/everything?q=Apple&from=2025-02-14&sortBy=popularity&apiKey=a1d168b7c51e41f3992c6f87a6b1b6d6")
+            .then(function(response){
+                if(!response.ok){
+                    throw new Error("Network response was not ok.")
+                }
+                return response.json();
+            })
+            .then(function(data){
+                loading.style.display = "none";
+                newsTable.innerHTML = "";
+                data.articles.forEach(function(article){
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                            <td>${article.source.id || "N/A"}</td>
+                            <td>${article.source.name || "N/A"}</td>
+                            <td>${article.author || "Unknown"}</td>
+                            <td>${article.title || "No title"}</td>
+                            <td>${article.description || "No description"}</td>
+                            <td><a href="${article.url}" target="_blank">Read More</a></td>
+                            <td><img src="${article.urlToImage || 'https://via.placeholder.com/100'}" 
+                                     alt="${article.title}" width="100" height="100"/></td>
+                            <td>${new Date(article.publishedAt).toLocaleString()}</td>
+                            <td>${article.content || "No content available"}</td>
+                        `;
+                    newsTable.appendChild(tr);
+                })
+            })
+            .catch(function(error){
+                loading.style.display = "none";
+                console.error("error while fetching: ", error)
+                warning.textContent = "Failed to fetch news. Please try again later.";
+                warning.style.display = "block";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },4000)
+            })
+        })
+    </script>
+</body>
+</html>

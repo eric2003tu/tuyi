@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All movies</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+        th, td {
+            border: 3px solid #0cc1f3;
+            padding: 10px;
+            text-align: left;
+            font-family: sans-serif;
+        }
+        th {
+            background-color: #b4b71a;
+            color: white;
+        }
+        button{
+            background-color: #8825a1;
+            border-radius: 7px;
+            color: white;
+            padding: 12px 12px;
+            font-weight: bolder;
+            text-decoration: none;
+            font-family: sans-serif;
+            position: absolute;
+            right: 20px; 
+            top: 10px;
+            z-index: 1000;
+            border: none;
+            cursor: pointer;
+        }
+        a{
+            text-decoration: none;
+            padding: 7px 7px;
+            font-weight: bolder;
+            font-size: 18px;
+        }
+        button:hover {
+            background-color: #3a203f;
+        }
+        #warning {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: red;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: #1717e7;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #0cc1f3;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            width: 250px; /* Adjust width to fit design */
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-left: 20px; /* Adds a little space from the button */
+        }
+        
+        select:focus {
+            border-color: #8825a1;
+            box-shadow: 0 0 5px rgba(136, 37, 161, 0.7);
+        }
+        
+        option {
+            font-size: 16px;
+            padding: 10px;
+        }
+        #error{
+            align-items: center;
+            font-size: 23px;
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>All the Movies That are On Fire</h1>
+    <button id="fetchButton" type="button">Fetch Movies</button>
+    <select id="movieCategory" name="movieCategory">
+        <option value="action">Action</option>
+        <option value="comedy">Comedy</option>
+        <option value="drama">Drama</option>
+        <option value="horror">Horror</option>
+        <option value="sci-fi">Sci-Fi</option>
+        <option value="popular">popular</option>
+        <option value="top_rated">top_rated</option>
+        <option value="upcoming">upcoming</option>
+        <option value="now_playing">now_playing</option>
+        <option value="trending/movie/week">trending/movie/week</option>
+    </select>
+    <p id="warning"></p>
+    <p id="loading" class="loading">Loading....</p>
+    <table id="moviesTable">
+        <thead>
+            <tr>
+                <th>WATCH IT</th>
+                <th>TITLE</th>
+                <th>YEAR</th>
+                <th>RELEASED</th>
+                <th>GENRE</th>
+                <th>DIRECTOR</th>
+                <th>WRITER</th>
+                <th>ACTORS</th>
+                <th>PLOT</th>
+                <th>LANGUAGE</th>
+                <th>POSTER</th>
+                <th>RATED</th>
+                <th>COUNTRY</th>
+                <th>PRODUCTION</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        const fetchButton = document.getElementById("fetchButton");
+        const moviesTable = document.querySelector("#moviesTable tbody");
+        const warning = document.getElementById("warning");
+        const loading = document.getElementById("loading");
+
+        fetchButton.addEventListener("click", function () {
+            loading.style.display = "block";
+            const selectElement = document.getElementById("movieCategory").value.trim();
+            const apiKey = "3b159ca3"; // OMDb API Key
+            const apiUrl = `https://www.omdbapi.com/?s=${selectElement}&apikey=${apiKey}`; // OMDb API URL
+
+            fetch(apiUrl)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok.");
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    loading.style.display = "none";
+                    if (!data.Search || data.Search.length === 0) {
+                        warning.textContent = "No movies found!!!";
+                        warning.style.display = "block";
+                        setTimeout(function () {
+                            warning.style.display = "none";
+                        }, 2000);
+                        return;
+                    }
+
+                    // Clear the table before adding new rows
+                    moviesTable.innerHTML = "";
+
+                    // Fetch detailed information for each movie
+                    data.Search.forEach(function (movie) {
+                        const detailUrl = `https://www.omdbapi.com/?i=${movie.imdbID}&apikey=${apiKey}`;
+                        fetch(detailUrl)
+                            .then(function (response) {
+                                if (!response.ok) {
+                                    throw new Error("Network response was not ok.");
+                                }
+                                return response.json();
+                            })
+                            .then(function (movieDetails) {
+                                const tr = document.createElement("tr");
+                                tr.innerHTML = `
+                                    <td><a href="https://www.imdb.com/title/${movieDetails.imdbID}/" target="_blank">Watch on IMDb</a></td>
+
+                                    <td>${movieDetails.Title}</td>
+                                    <td>${movieDetails.Year}</td>
+                                    <td>${movieDetails.Released}</td>
+                                    <td>${movieDetails.Genre}</td>
+                                    <td>${movieDetails.Director}</td>
+                                    <td>${movieDetails.Writer}</td>
+                                    <td>${movieDetails.Actors}</td>
+                                    <td>${movieDetails.Plot}</td>
+                                    <td>${movieDetails.Language}</td>
+                                    <td><img src="${movieDetails.Poster}" alt="${movieDetails.Title}" width="100"></td>
+                                    <td>${movieDetails.Rated}</td>
+                                    <td>${movieDetails.Country}</td>
+                                    <td>${movieDetails.Production}</td>
+                                `;
+                                moviesTable.appendChild(tr);
+                            })
+                            .catch(function (error) {
+                                console.error("Failed to fetch movie details:", error);
+                            });
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Failed to fetch movies:", error);
+                    loading.style.display = "none";
+                    moviesTable.innerHTML= "<tr id='error'><td colspan='14'>Failed to fetch movies. Please try again later.</td></tr>";arning.textContent = "Failed to fetch movies. Please try again later.";
+                    const erro = document.getElementById("error");
+                    warning.style.display = "block";
+                    setTimeout(function () {
+                        erro.style.display = "none";
+                    }, 3000);
+                });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, rgb(148, 60, 115), #2e8878, #acb6e5,rgb(141, 53, 119));
+            margin: 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 3px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 50%;
+            margin-top: 320px;
+            border-width: 4px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input {
+            width: 70%;
+            height: 20px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            width: 30%;
+            height: 45px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #warning{
+            color:  red;
+        }
+        h1{
+            color: green;
+        }
+
+    </style>
+</head>
+<body>
+    <form id="signUpPageForm">
+        <h1>SIGNUP PAGE</h1>
+        <label for="firstname">FirstName</label>
+        <input type="text" id="firstName" name="firstName" placeholder="Enter your firstName" required/><br><br>
+        <label for="lastname">LastName</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Enter Your lastName" required/><br><br>
+        <label for="username">UserName</label>
+        <input type="text" name="userName" id="userName" placeholder="Enter Your Username" required/><br><br>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter Your Email" required/><br><br>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Create a Strong Password" required/><br><br>
+        <label for="comfirmPassword">Comfirm Password</label>
+        <input type="password" id="comfirmPassword" name="comfirmPassword" placeholder="Re-type Your Password" required/><br><br>
+        <button id="submitButton" type="submit">Signup</button>
+        <p id="warning"></p>
+    </form>
+    <script>
+        const form = document.getElementById("signUpPageForm");
+        const warning = document.getElementById("warning");
+        form.addEventListener("submit",function(event){
+            event.preventDefault();
+            const firstName = document.getElementById("firstName").value.trim();
+            const lastName = document.getElementById("lastName").value.trim();
+            const userName = document.getElementById("userName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const comfirmPassword = document.getElementById("comfirmPassword").value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailRegex.test(email)){
+                warning.textContent = "Please Enter a valid Email!";
+                warning.style.color = "red";
+                warning.style.display = "block";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },5000)
+                return;
+            }
+            if(!/[a-z]/.test(password) && !/[A-Z]/.test(password) && !/^[a-zA-Z0-9]/.test(password) && !/[0-9]/.test(password)){
+                warning.textContent = "Password should contain at least one uppercase letter, one lowercase letter, one digit and one special character!";
+                warning.style.color = "red";
+                warning.style.display = "block";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },5000)
+                return;
+            }
+            if(password!==comfirmPassword){
+                warning.textContent =" Password do not match!. Please try again later!";
+                warning.style.color = "red";
+                warning.style.display = "block";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },5000)
+                return;
+            }
+            fetch("https://example.com/users",{
+                method : "POST",
+                headers:{
+                    "Content-Type": "application/json",
+                },
+                body : JSON.stringify({
+                    name: firstName + " " + lastName,
+                    username : userName,
+                    email : email,
+                    password : password,
+                })
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    if (response.status === 409) {
+                        throw new Error("Email already exists. Please log in instead.");
+                    } else {
+                        throw new Error("Registration failed. Please try again.");
+                    }
+                }
+                return response.json();
+            })
+            .then(function(data){
+                warning.textContent = "Signup was successful! login now!!";
+                warning.style.color = "green";
+                warning.style.display = "block";
+                form.reset();
+                setTimeout(function(){
+                    warning.style.display ="none";
+                },3000)
+            })
+            .catch(function(error){
+                console.error("Error signing up:", error);
+                warning.textContent = "Failed to signup. Please try again later!";
+                warning.style.display = "block";
+                warning.style.color ="red";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },3000)
+            })
+        });
+    </script>
+</body>
+</html>

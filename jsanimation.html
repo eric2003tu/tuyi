@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #box {
+            width: 150px;
+            padding: 25px 25px;
+            height: 150px;
+            background-color: lightblue;
+            border-radius: 10px;
+            margin-top: 20px;
+            transition: transform 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <button id="animate">Animate box foward</button>
+    <div id="box"><p id="text">Rotate me Please</p></div>
+    <script>
+        const box = document.getElementById("box");
+        const text = document.getElementById("text"); 
+        const button = document.getElementById("animate");
+        button.addEventListener("click", function(){
+            if(button.innerText === "Animate box foward"){
+                button.innerText = "Animate box backward";
+                text.innerHTML = "Conguratulations!! You have Reversed me!!";
+                text.style.color = "red";
+                box.style.padding = "18px";
+            box.style.transform= "translateX(200px) rotate(180deg)";
+            }
+        else if(button.innerText === "Animate box backward"){
+            button.innerText = "Animate box foward";
+            text.innerHTML = "You have backed me now!!!";
+            box.style.padding = "18px";
+            text.style.color = "green";
+            box.style.transform = "translateX(0px) rotate(0deg)";
+        }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <div id="warning"></div>
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Enter Your Name">
+        <input type="email" id="email" placeholder="Entar your email">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter Your password">
+        <button id="button"> Submit</button>
+    </form>
+    <script>
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const warningDivision = document.getElementById("warning");
+        let warning = document.createElement("P");
+        warningDivision.appendChild(warning);
+        warning.style.fontWeight = "bolder";
+        warning.style.fontSize = "17px";
+        warning.style.color = "red";
+        const button = document.getElementById("button");
+        button.addEventListener("click", function(event){
+            const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+            event.preventDefault();
+            if(!name || name.trim().length<=2 || /[^a-zA-Z0-9\s]/.test(name) || /[0-9]/.test(name)){
+                warning.textContent = "Please Name must be filled! and it must be valid!";
+                return;
+            }
+            if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+                warning.textContent = "Please Enter a Valid Email Address!";
+                return;
+            }
+            if(!(/[a-z]/.test(password) && /[A-Z]/.test(password) && /[^a-zA-Z0-9]/.test(password) && /[0-9]/.test(password) && (password.length) >= 8)){
+                warning.textContent = " Please Password must contain at least 8 characters, one capital leater, one small letter, one digit and one special character";
+                return;
+            }
+            else{
+                warning.textContent = "The Form was successfully Submited!!";
+                warning.style.color = "green";
+            }
+        });
+
+    </script>
+</body>
+</html>

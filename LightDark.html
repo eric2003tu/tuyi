@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="container" style="background-color:green; color: blue;">
+<h1 id="h1" style="color: blue;"> This is Heading one</h1>
+<h1 id="h2" style="color: blue;">This is heading two</h1>
+<p id="p1" style="color: blue;">This is paragraph one</p>
+<button id="change" style="background-color: greenyellow; color: blue ;">Dark Mode</button>
+</div>
+<script>
+let container = document.getElementById("container");
+let button = document.getElementById("change");
+let heading = document.getElementById("h1");
+let h2 = document.getElementById("h2");
+let para = document.getElementById("p1");
+button.addEventListener("click",function(){
+if (button.innerText == "Light Mode"){
+    button.innerText = "Dark Mode";
+    container.style.backgroundColor = 'green';
+    container.style.color = 'blue';
+    button.style.backgroundColor = 'greenyellow';
+    button.style.color = 'blue';
+    heading.style.color = 'blue';
+    para.style.color = 'blue';
+    h2.style.color = 'blue';
+}
+else if(button.innerText== "Dark Mode"){
+button.innerText = "Light Mode";
+container.style.backgroundColor = 'black';
+container.style.color = 'white';
+button.style.backgroundColor = 'black';
+button.style.color = 'white';
+heading.style.color = 'white'; 
+para.style.color = 'white';
+h2.style.color = 'white'
+}
+});
+</script>
+</body>
+</html>

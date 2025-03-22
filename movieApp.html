@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            text-decoration: none;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        input {
+            width: 70%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button,a {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-left: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        #movieDetails {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hidden {
+           display: none;
+        }
+        
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        #warning{
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: red;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: #1717e7;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search for a Movie</h1>
+        <div class="search-box">
+            <input type="text" id="movieTitle" placeholder="Enter movie title...">
+            <button id="searchButton">Search</button>
+        </div>
+        <p id="warning"></p>
+        <p id="loading" class="loading">Loading....</p>
+        <div id="movieDetails" class="hidden">
+            <img id="moviePoster" src="" alt="Movie Poster" width="400px" height="400px">
+            <h2 id="movieName"></h2>
+            <p><strong>Rating:</strong> <span id="movieRating"></span></p>
+            <p><strong>Year:</strong> <span id="movieYear"></span></p>
+            <p id="moviePlot"></p>
+            <p id="movieActors"></p>
+            <p id="director"></p>
+            <p id="movieProduction"></p>
+            <div id="watch"></div>
+        </div>
+    </div>
+    <script>
+        const searchMovieButton = document.getElementById("searchButton");
+        const moviePoster = document.getElementById("moviePoster");
+        const watchMovie = document.getElementById("watch");
+        const movieName = document.getElementById("movieName");
+        const movieRating = document.getElementById("movieRating");
+        const loading = document.getElementById("loading");
+        const movieYear = document.getElementById("movieYear");
+        const moviePlot = document.getElementById("moviePlot");
+        const movieActors = document.getElementById("movieActors");
+        const movieProduction = document.getElementById("movieProduction");
+        const warning = document.getElementById("warning");
+        const director = document.getElementById("director");
+        searchMovieButton.addEventListener("click",function(){
+            const movieTitle = document.getElementById("movieTitle").value.trim();
+            loading.style.display = "block";
+            if(!movieTitle){
+                warning.textContent = "Please enter a movie title.";
+                warning.style.display = "block";
+                loading.style.display ="none";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },2000)
+                return;
+            }
+            const apiKey = "3b159ca3"; // Replace with your OMDb API key
+            fetch(`https://www.omdbapi.com/?t=${movieTitle}&apikey=${apiKey}`)
+
+
+            .then(function(response){
+                if(!response.ok){
+                    warning.textContent = "The network request failed.";
+                    warning.style.display = "block";
+                    loading.style.display ="none";
+                    document.getElementById("movieTitle").value ="";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },2000)
+                return;
+                }
+                return response.json();
+                document.getElementById("movieTitle").value ="";
+            })
+            .then(function(data){
+                loading.style.display = "none";
+                if(data.error){
+                    warning.textContent = data.error;
+                    warning.style.display ="block";
+                    warning.style.display = "block";
+                    warning.textContent = "Invalid inputs";
+                    document.getElementById("movieTitle").value ="";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },2000)
+                return;
+                }
+                moviePoster.src = data.Poster;
+                movieName.textContent = data.Title;
+                movieRating.textContent = data.Rated;
+                movieYear.textContent = data.Year;
+                moviePlot.textContent = `Plots: ${data.Plot}`;
+                movieActors.textContent = `Actors: ${data.Actors}`;
+                director.textContent = `Director: ${data.Director}`;
+                movieProduction.textContent = `Production: ${data.Production}`;
+                document.getElementById("movieDetails").classList.remove("hidden");
+                watchMovie.innerHTML = `
+                <a href=https://www.imdb.com/title/${data.imdbID}/ target="_blank">Watch ${data.Title} on IMDb</a>
+            `;
+            
+            })
+            .catch(function(error){
+                loading.style.display = "none";
+                console.error("Error fetching movie data:",error);
+                warning.textContent = "An error occured while fetching movie data. Please try again later.";
+                warning.style.display = "block";
+                document.getElementById("movieTitle").value ="";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },2000)
+            })
+        });
+    </script>
+</body>
+</html>

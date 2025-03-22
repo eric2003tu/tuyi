@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<button id="button" style="padding: 5px 5px; background-color: blue; color: white; font-weight: bolder; border-radius: 5px;">Create Item
+
+</button>&nbsp;&nbsp;&nbsp;
+<button id="remove" style="padding: 5px 5px; background-color: #f74b4b; color: white; font-weight: bolder; border-radius: 5px; display: none;">Remove Item
+
+</button>
+<ol id="list">
+</ol>
+<script>
+    let count = 1;
+    let remov = document.getElementById("remove");
+    const list = document.getElementById("list");
+    const button = document.getElementById("button");
+    const para = document.createElement("p");
+    para.style.color = "red";
+    document.body.appendChild(para);
+    button.addEventListener("click", function(){
+        let randomNum = Math.floor(Math.random() * 45678);
+        const newItem = document.createElement("li");
+        if(newItem){
+            button.innerText = "Add Item";
+            remov.style.display = "inline-block"; 
+        }
+        newItem.innerText = `Item ${count} ${randomNum*(Math.pow(count,5))}`;
+        list.appendChild(newItem);
+        count++;});
+        remov.addEventListener("click",function(){
+            const list = document.getElementById("list");
+    if (list.lastElementChild) {
+        list.removeChild(list.lastElementChild); // Remove the last <li> element
+    }
+    
+        });
+    list.addEventListener("click", function(event){
+        if(event.target.tagName ==="LI"){           
+        para.innerText = "You clicked "+ event.target.textContent;
+        
+        }
+    });
+    
+</script>
+</body>
+</html>

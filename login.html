@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right,rgb(150, 63, 109), #2e8e7c, #acb6e5,rgb(164, 64, 139));
+            margin: 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 320px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #ccc;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            width: 30%;
+            height: 45px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <form id="loginForm">
+        <h1>Login Page</h1>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address"/>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password"/>
+        <button type="submit" id="submitButton">Login</button>
+        <p id="warning"></p>
+    </form>
+    <script>
+        const form = document.getElementById("loginForm");
+        const warning = document.getElementById("warning");
+        form.addEventListener("submit", function(event){
+            event.preventDefault();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            if(!email || !password){
+                warning.textContent = "Please email and password must be filled!";
+                warning.style.color = "red";
+                warning.style.display ="block";
+                setTimeout(function(){
+                    warning.style.display ="none";
+                },5000)
+                return;
+            }
+            fetch("https://example.com/login",{
+                method : "POST",
+                headers:{
+                    "Content-Type" : "application/json",
+                },
+                body : JSON.stringify({email,password}),
+            })
+            .then(function(response){
+                if(!response.ok){
+                    throw new Error("Invalid email or Password.");
+                }
+                return response.json();
+            })
+            .then(function(data){
+                
+                    warning.textContent = "Login successfully! redirecting ...";
+                    warning.style.color = "green";
+                    warning.style.display ="block";
+                    localStorage.setItem("authToken", data.token);
+
+                    setTimeout(function(){
+                        warning.style.display ="none";
+                        window.location.href = "dashboard.html";
+
+                    },6000)
+                })
+            .catch(function(error){
+                console.error("Error signing in:",error);
+                warning.textContent = "Error occured while signing in. Please check your Email and password and try again.";
+                warning.style.color = "red";
+                warning.style.display = "block";
+                form.reset();
+                setTimeout(function(){
+                    warning.style.display ="none";
+                    form.reset();
+            }, 7000)
+            })
+        });
+    </script>
+</body>
+</html>

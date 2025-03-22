@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .li{
+            display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border: 2px solid #ccc;
+      margin-bottom: 5px;
+      border-radius: 5px;
+
+        }
+        .li button:hover{
+            background: #ff1a1a;
+        }
+        .delete-btn{
+            background-color: red;
+            color: white;
+            font-weight: bolder;
+            font-family: sans-serif;
+            padding: 5px 5px;
+            border-radius: 5px;
+        }
+        .delete-btn:hover{
+            background: #ff1a1a;
+            cursor: pointer; 
+        }
+        .completed{
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        #addToList{
+            cursor: pointer; 
+            background-color: blue; 
+            color: white; 
+            padding: 3px 3px; 
+            border-radius: 5px;
+        }
+        #list{
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <form action="">
+        <label for="Item">Item To be Added</label>
+        <input type="text" id="item" placeholder="Enter item"> &nbsp;
+        <button id="addToList" type="button">Add To List</button>
+        <ul id="list"></ul>
+    </form>
+    <script>
+        const button = document.getElementById("addToList");
+        const itemInput = document.getElementById("item");
+        const list = document.getElementById("list");
+        button.addEventListener("click", function(event){
+            event.preventDefault();
+            const newLiValue = itemInput.value.trim();
+            const newListItem = document.createElement("li");
+            newListItem.className = "li";
+            newListItem .innerHTML = `<span>${newLiValue}</span>
+            <button class ="delete-btn">Delete</button>`;
+            if(list.innerHTML.includes(newLiValue)){
+                alert("item already exists!!");
+            }
+           else if(newLiValue!=""){
+            list.appendChild(newListItem);}
+            else{
+                alert("Empty items can't be added!!")
+            }
+            itemInput.value = "";
+        }
+    );
+    list.addEventListener("click", function(event){
+        const target = event.target;
+
+// Mark task as completed
+if (target.tagName === 'SPAN') {
+  target.parentElement.classList.toggle('completed');
+}
+
+// Delete task
+if (target.classList.contains('delete-btn')) {
+  target.parentElement.remove();
+}
+    });
+    </script>
+    
+</body>
+</html>

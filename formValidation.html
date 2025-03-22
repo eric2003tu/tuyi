@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <label for="Name">Name</label>
+        <input type="text" id="name" placeholder="Enter your name">
+        <label for="emai">Email</label>
+        <input type="email" id="email" placeholder="Enter your email address">
+        <label for="password">password</label>
+        <input type="password" id="password" placeholder="Enter your password">
+        <button id="button" type="submit">Submit</button>
+    </form>
+    <script>
+        
+        let button = document.getElementById("button");
+        button.addEventListener("click", function(event){
+            let name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+            event.preventDefault();
+            if(!/@gmail.com/.test(email)){
+                alert("Please Enter a valid Email!"); 
+                return;
+            }
+            if(!(/[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[^a-zA-Z0-9]/.test(password))){
+                alert("Password should contain at least one uppercase letter, one lowercase letter, one digit and one special character!");
+                return;
+            }
+            else{
+                alert("Form Submited Successfully!!");
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #button{
+            padding: 20px 40px;
+            margin: 40px 40px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.6s ease, transform 0.2s ease;
+        }
+        #button:hover,#btn2:hover,#btn3:hover{
+            background-color: lightcoral;
+            transform: scale(2.2);
+        }
+        #btn2{
+            padding: 20px 40px;
+            margin: 40px 40px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.6s ease-in-out, transform 0.2s ease-in-out;
+
+        }
+        #btn3{
+            padding: 20px 40px;
+            background-color: blue;
+            margin: 40px 40px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-content: center;
+            align-items: center;
+            transition: background-color 0.6s linear, transform 0.2s linear;
+        }
+    </style>
+</head>
+<body><center>
+    <button id="button">click me</button>
+    <button id="btn2">Button 2</button>
+    <button id="btn3">Button 3</button>
+    </center>
+</body>
+</html>

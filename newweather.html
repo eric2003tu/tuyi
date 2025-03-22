@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Kigali, Rwanda</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        input {
+            padding: 10px;
+            width: 250px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #weather {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            display: inline-block;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App - Kigali, Rwanda</h1>
+    <input type="text" id="cityInput" placeholder="Enter city name (default: Kigali)">
+    <button id="fetchWeather">Get Weather</button>
+    <div id="weather"></div>
+
+    <script>
+        const apiKey = "713dc84173a6b3e849d68311a4be5845"; // Your API key
+
+        document.getElementById("fetchWeather").addEventListener("click", function () {
+            const city = document.getElementById("cityInput").value.trim() || "Kigali,RW"; // Default to Kigali if empty
+            fetchWeather(city);
+        });
+
+        function fetchWeather(city) {
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod == 200) {
+                        document.getElementById("weather").innerHTML = `
+                            <h2>${data.name}, ${data.sys.country}</h2>
+                            <p><strong>Temperature:</strong> ${data.main.temp}°C</p>
+                            <p><strong>Weather:</strong> ${data.weather[0].description}</p>
+                            <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
+                            <p><strong>Wind Speed:</strong> ${data.wind.speed} m/s</p>
+                        `;
+                    } else {
+                        alert(`Error: ${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching weather data:", error);
+                    alert("Failed to fetch weather data. Please check your internet connection.");
+                });
+        }
+
+        // Auto-fetch Kigali weather on page load
+        window.onload = function() {
+            fetchWeather("Kigali,RW");
+        };
+    </script>
+</body>
+</html>

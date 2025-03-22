@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                background-color: #f4f4f4;
+                padding: 20px;
+            }
+            h1 {
+                color: #333;
+            }
+            input {
+                padding: 10px;
+                width: 250px;
+                margin: 10px;
+                font-size: 16px;
+            }
+            button {
+                padding: 10px 15px;
+                font-size: 16px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #218838;
+            }
+            #weather {
+                margin-top: 20px;
+                padding: 15px;
+                background: white;
+                border-radius: 8px;
+                display: inline-block;
+                text-align: left;
+            }
+            #warning{
+                display: none;
+                text-align: center;
+                font-weight: bold;
+                color: red;
+                margin-top: 20px;
+                font-size: 20px;
+            }
+        </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <p id="warning"></p>
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <button id="fetchWeather">Get Weather</button>
+    <div id="weather"></div>
+
+    <script>
+        const apiKey = "f2cd9d67f85e15251e482c1bb1bacdb9"; // Replace with your OpenWeatherMap API key
+        const warning = document.getElementById("warning");
+        document.getElementById("fetchWeather").addEventListener("click", function () {
+            const city = document.getElementById("cityInput").value.trim();
+
+            if (city === "") {
+                warning.textContent = "Please enter a City name.";
+                warning.style.display = "block";
+                setTimeout(function(){
+                    warning.style.display = "none";
+                },4000)
+                return;
+            }
+
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.cod === 200) {
+                        const weatherDiv = document.getElementById("weather");
+                        weatherDiv.innerHTML = `
+                            <h2>Weather in ${data.name}, ${data.sys.country}</h2>
+                            <p>Temperature: ${data.main.temp}°C</p>
+                            <p>Weather: ${data.weather[0].description}</p>
+                            <p>Humidity: ${data.main.humidity}%</p>
+                            <p>Wind Speed: ${data.wind.speed} m/s</p>
+                        `;
+                    } else {
+                        warning.textContent = "Ivalid city name, or your API key is incorrect. Please check your API key and City name";
+                        warning.style.display = "block";
+                        setTimeout(function(){
+                            warning.style.display = "none";
+                        },4000)
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching weather data:", error);
+                    warning.textContent = "Failed to fetch weater data for ${city}. please try again later.";
+                    warning.style.display = "block";
+                    setTimeout(function(){
+                        warning.style.display = "none";
+                    },5000)
+                });
+        });
+        //a1d168b7c51e41f3992c6f87a6b1b6d6
+    </script>
+</body>
+</html>
